@@ -88,13 +88,23 @@ class data_import:
 
 
     def validate_row (self, row: dict):
+        success = False
         if row['provider'].strip() == "":
             raise ValueError('Provider is empty')
 
         if row['datetime'].strip() == "":
             raise ValueError('Date is empty')
-        dt = datetime.strptime(row["datetime"], "%d.%m.%Y %H:%M:%S")
-        row["datetime"] = dt.strftime("%Y-%m-%d %H:%M:%S")
+        format = ["%d.%m.%Y %H:%M:%S", "%Y-%m-%d %H:%M:%S", "%Y%m%d%H%M%S"]
+        for frm in format:
+            try:
+                dt = datetime.strptime(row["datetime"], frm)
+                row["datetime"] = dt.strftime("%Y-%m-%d %H:%M:%S")
+                success = True
+                break
+            except ValueError:
+                continue
+        if not success:
+            raise ValueError("Unsupported datetime Format")
 
         if row['number'].strip() == "":
             raise ValueError('Number is empty')
