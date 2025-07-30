@@ -110,19 +110,20 @@ class data_import:
             raise ValueError('Number is empty')
 
         if row['duration'].strip() == "":
-            if ":" in row['duration']:
-                parts = ['duration'].split(':')
-                parts = [int(p) for p in parts]
-                if len(parts) == 3:
-                    h, m, s = parts
-                elif len(parts) == 2:
-                    h = 0
-                    m, s = parts
-                else:
-                    raise ValueError('Invalid duration format')
-                row['duration'] = h * 3600 + m * 60 + s
+            raise  ValueError('Duration is empty')
+        if ":" in row['duration']:
+            parts = row['duration'].split(':')
+            parts = [int(p) for p in parts]
+            if len(parts) == 3:
+                h, m, s = parts
+            elif len(parts) == 2:
+                h = 0
+                m, s = parts
             else:
-                row['duration'] = float(row['duration'])
+                raise ValueError('Invalid duration format')
+            row['duration'] = h * 3600 + m * 60 + s
+        else:
+            row['duration'] = float(row['duration'])
 
         if row['duration'] < 0:
              raise ValueError('Duration is smellier than 0')
