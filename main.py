@@ -94,7 +94,7 @@ class data_import:
 
         if row['datetime'].strip() == "":
             raise ValueError('Date is empty')
-        format = ["%d.%m.%Y %H:%M:%S", "%Y-%m-%d %H:%M:%S", "%Y%m%d%H%M%S"]
+        format = ["%d.%m.%Y %H:%M:%S", "%Y-%m-%d %H:%M:%S", "%Y%m%d%H%M%S", "%m/%d/%Y %H:%M:%S"]
         for frm in format:
             try:
                 dt = datetime.strptime(row["datetime"], frm)
