@@ -19,7 +19,7 @@ if __name__ == '__main__':
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 import mysql.connector
-import csv
+import csv, re
 from InquirerPy import inquirer
 import configparser
 from datetime import datetime
@@ -108,6 +108,11 @@ class data_import:
 
         if row['number'].strip() == "":
             raise ValueError('Number is empty')
+
+        row['number'] = re.sub(r'\D', '', row['number'])
+
+        if not row['number']:
+            raise ValueError('Number format is invalid or empty after cleaning')
 
         if row['duration'].strip() == "":
             raise  ValueError('Duration is empty')
