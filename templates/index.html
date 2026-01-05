@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lng="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Billing Importer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <h1>Billing import system</h1>
+
+    <form action="/" method="post" enctype="multipart/form-data">
+        <p>Change CSV file for download</p>
+        <input type="file" name="csv_file" required accept=".csv">
+        <br><br>
+        <button type="submit">Upload and working</button>
+    </form>
+
+    {% if preview %}
+        <h3>Preview first 10 rows:</h3>
+        <table class="preview-table">
+            <tr>
+                {% for key in preview[0].keys() %}
+                    <th>{{ key }}</th>
+                {% endfor %}
+            </tr>
+            <tbody>
+                {% for row in preview %}
+                    <tr>
+                        {% for value in row.values() %}
+                            <td>{{ value }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+    {% if message %}
+        <div class="message">{{ message }}</div>
+    {% endif %}
+</body>
+</html>
