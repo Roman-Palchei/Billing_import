@@ -3,6 +3,7 @@ import csv
 import re
 import configparser
 import io
+import os
 from datetime import datetime
 
 
@@ -19,10 +20,10 @@ class data_import:
     def connection_db(self):
         try:
             self.db_connection = mysql.connector.connect(
-                host=self.config.get('mysql', 'host'),
-                user=self.config.get('mysql', 'user'),
-                passwd=self.config.get('mysql', 'password'),
-                database=self.config.get('mysql', 'database')
+                host=os.getenv('DB_HOST') or self.config.get('mysql', 'host'),
+                user=os.getenv('DB_USER') or self.config.get('mysql', 'user'),
+                passwd=os.getenv('DB_PASSWORD') or self.config.get('mysql', 'password'),
+                database=os.getenv('DB_NAME') or self.config.get('mysql', 'database')
             )
             self.cursor = self.db_connection.cursor(dictionary=True)
         except mysql.connector.Error as err:
@@ -64,7 +65,7 @@ class data_import:
         if not row["number"]: raise ValueError("Number is empty")
 
         if ":" in str(row["duration"]):
-            parts = [int(p) for p in row["duration"].strip(":")]
+            parts = [int(p) for p in row["duration"].split(":")]
             if len(parts) == 3: h, m, s = parts
             elif len(parts) == 2: h=0; m, s = parts
             else: h=0; m=0; s=0
@@ -75,7 +76,7 @@ class data_import:
         if not row["duration"]: raise ValueError("Durattion is empty")
 
         row["cost"] = float(row["cost"])
-        if not row["cost"]: raise ValueError("Cost is empty")
+        #   if not row["cost"]: raise ValueError("Cost is empty")
 
     def import_data_from_file(self, file_storage):
         self.connection_db()
@@ -114,11 +115,15 @@ class data_import:
 
             if row_to_inspect:
                 self.cursor.executemany(
-                    "INSERT INTO billig_calls (provider_id, call_datetime, phone_a, duration_seconds, cost) VALUE (%s, %s, %s, %s, %S)",
+                    "INSERT INTO billing_calls (provider_id, call_datetime, phone_a, duration_seconds, cost) VALUE (%s, %s, %s, %s, %s)",
                     row_to_inspect
                 )
                 self.db_connection.commit()
-            return f"Success! Imported {imported_count} rows. Errors: {len(errors)}"
+            result_msg = f"Success! Imported {imported_count} rows. Errors: {len(errors)}"
+
+            if errors:
+                result_msg += f" || REASON (row 1): {errors[0]}"
+            return result_msg
         finally:
             if self.db_connection and self.db_connection.is_connected():
                 self.cursor.close()
@@ -138,6 +143,7 @@ class data_import:
                     break
                 preview_data.append(row)
 
+            stream.detach()
             file_storage.stream.seek(0)
             return preview_data
 

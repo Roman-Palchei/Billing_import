@@ -1,0 +1,32 @@
+# Ігноруємо систему контролю версій
+.git
+.gitignore
+
+# Ігноруємо віртуальне середовище (Docker створює своє)
+venv/
+.venv/
+env/
+
+# Ігноруємо кеш пітона (це сміття)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# !!! ІГНОРУЄМО КОНФІГИ ТА СЕКРЕТИ !!!
+config.ini
+.env
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Ігноруємо IDE
+.idea/
+.vscode/
+
+# Ігноруємо старі бекапи та логи
+*.log
+*.bak
+main.py
+old_files/
+billing/

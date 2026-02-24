@@ -1,6 +1,11 @@
 /* static/style.css */
 body {
-    font-family: sens-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: Arial, sens-serif;
     padding: 20px;
     background-color: #f9f9f9;
 }
@@ -30,6 +35,13 @@ button {
 button:hover {
     background-color: #005f7f;
 }
+
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    padding: 32px;
+    }
 
 .message {
     padding: 15px;
@@ -68,4 +80,17 @@ button:hover {
 
 .preview-table th:hover {
     background-color: #ddd;
+}
+
+#preview-card {
+    margin-top: 20px;
+    display: none;
+    width: 100%;
+    max-width: 600px;
+}
+
+#preview-card h3 {
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: var(--text-main);
 }

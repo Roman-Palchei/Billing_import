@@ -8,14 +8,19 @@
 <body>
 
     <h1>Billing import system</h1>
+    <div class="card">
+        <form action="/" method="post" enctype="multipart/form-data">
+            <p>Change CSV file for download</p>
+            <input id="csv_file" type="file" name="csv_file" required accept=".csv">
+            <br><br>
+            <button type="submit">Upload and working</button>
+        </form>
+    </div>
 
-    <form action="/" method="post" enctype="multipart/form-data">
-        <p>Change CSV file for download</p>
-        <input type="file" name="csv_file" required accept=".csv">
-        <br><br>
-        <button type="submit">Upload and working</button>
-    </form>
-
+    <div class="card" id="preview-card">
+        <h3>Preview:</h3>
+        <div id="preview-container"></div>
+    </div>
     {% if preview %}
         <h3>Preview first 10 rows:</h3>
         <table class="preview-table">
@@ -38,5 +43,63 @@
     {% if message %}
         <div class="message">{{ message }}</div>
     {% endif %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+        const fileInput = document.getElementById('csv_file');
+        const previewContainer = document.getElementById('preview-container');
+        const previewCard = document.getElementById('preview-card');
+
+        if (fileInput && previewContainer) {
+            fileInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+
+                console.log("File changed! Name: ", file ? file.name : "None");
+
+                if (!file) {
+                    previewContainer.innerHTML = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const text = e.target.result;
+                    const rows = text.split('\n');
+
+                    let html = '<table class="preview-table">';
+                    const limit = Math.min(rows.length, 11);
+
+                    for (let i = 0; i < limit; i++) {
+                        if (!rows[i].trim()) continue;
+
+                        const cols = rows[i].split(',');
+                        html += '<tr>';
+
+                        for (let j = 0; j < cols.length; j++) {
+                            if (i === 0) {
+                                html += `<th>${cols[j]}</th>`;
+                            } else {
+                                html += `<td>${cols[j]}</td>`;
+                            }
+                        }
+                        html += '</tr>';
+                    }
+                    html += '</table>';
+
+                    if (rows.length > limit) {
+                        html += '<p style="font-size: 12px; color: gray; margin-top: 5px;">Show first 10 rows...</p>';
+                    }
+
+                    previewContainer.innerHTML = html;
+                    previewCard.style.display = 'block';
+                };
+
+                reader.readAsText(file);
+            });
+        } else {
+            console.error("Error: didn't found input or HTML.");
+        }
+    });
+</script>
 </body>
 </html>

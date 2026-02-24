@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash, redirect, url_for
 from utils.importer import data_import
 
 app = Flask(__name__)
+
+app.secret_key = 'random_secret_key_change_this_later'
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -31,4 +33,4 @@ def home():
     return render_template('index.html', message=result_message, preview_data=preview_data)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000)

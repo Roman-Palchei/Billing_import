@@ -1,3 +1,5 @@
 mysql-connector-python
 InquirerPy
 tqdm
+flask
+mysql-connector-python
